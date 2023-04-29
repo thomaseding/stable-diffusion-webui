@@ -323,6 +323,7 @@ re_nonletters = re.compile(r'[\s' + string.punctuation + ']+')
 re_pattern = re.compile(r"(.*?)(?:\[([^\[\]]+)\]|$)")
 re_pattern_arg = re.compile(r"(.*)<([^>]*)>$")
 max_filename_part_length = 128
+counter = 0
 NOTHING_AND_SKIP_PREVIOUS_TEXT = object()
 
 
@@ -338,9 +339,9 @@ def sanitize_filename_part(text, replace_spaces=True):
     text = text.rstrip(invalid_filename_postfix)
     return text
 
-
 class FilenameGenerator:
     replacements = {
+        'counter': lambda self: self.counter(),
         'seed': lambda self: self.seed if self.seed is not None else '',
         'seed_first': lambda self: self.seed if self.p.batch_size == 1 else self.p.all_seeds[0],
         'seed_last': lambda self: NOTHING_AND_SKIP_PREVIOUS_TEXT if self.p.batch_size == 1 else self.p.all_seeds[-1],
@@ -458,6 +459,11 @@ class FilenameGenerator:
     def string_hash(self, text, *args):
         length = int(args[0]) if (args and args[0] != "") else 8
         return hashlib.sha256(text.encode()).hexdigest()[0:length]
+
+    def counter(self):
+        global counter
+        counter += 1
+        return counter
 
     def apply(self, x):
         res = ''
@@ -634,7 +640,8 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
             fullfn = None
             for i in range(500):
                 fn = f"{basecount + i:05}" if basename == '' else f"{basename}-{basecount + i:04}"
-                fullfn = os.path.join(path, f"{fn}{file_decoration}.{extension}")
+                dash = '-' if file_decoration != '' else ''
+                fullfn = os.path.join(path, f"{file_decoration}{dash}{fn}.{extension}")
                 if not os.path.exists(fullfn):
                     break
         else:
