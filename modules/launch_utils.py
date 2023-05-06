@@ -393,6 +393,7 @@ def prepare_environment():
         requirements_file = os.path.join(script_path, requirements_file)
 
     if not requirements_met(requirements_file):
+        # THOMAS: disable this when I have no internet to get pass update error
         run_pip(f"install -r \"{requirements_file}\"", "requirements")
         startup_timer.record("install requirements")
 
