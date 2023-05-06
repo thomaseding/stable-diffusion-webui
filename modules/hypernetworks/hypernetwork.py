@@ -712,6 +712,7 @@ def train_hypernetwork(id_task, hypernetwork_name, learn_rate, batch_size, gradi
                         p.height = training_height
 
                     preview_text = p.prompt
+                    print(preview_text)
 
                     with closing(p):
                         processed = processing.process_images(p)

@@ -603,6 +603,7 @@ def train_embedding(id_task, embedding_name, learn_rate, batch_size, gradient_st
                         p.height = training_height
 
                     preview_text = p.prompt
+                    print(preview_text)
 
                     with closing(p):
                         processed = processing.process_images(p)
