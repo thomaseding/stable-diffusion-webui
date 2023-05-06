@@ -587,7 +587,8 @@ def train_embedding(id_task, embedding_name, learn_rate, batch_size, gradient_st
                     )
 
                     if preview_from_txt2img:
-                        p.prompt = preview_prompt
+                        # THOMAS
+                        p.prompt = preview_prompt + ", " + batch.cond_text[0]
                         p.negative_prompt = preview_negative_prompt
                         p.steps = preview_steps
                         p.sampler_name = sd_samplers.samplers[preview_sampler_index].name
