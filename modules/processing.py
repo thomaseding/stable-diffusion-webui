@@ -839,6 +839,7 @@ def process_images_inner(p: StableDiffusionProcessing) -> Processed:
 
             if not p.disable_extra_networks:
                 with devices.autocast():
+                    # THOMAS lora
                     extra_networks.activate(p, p.extra_network_data)
 
             if p.scripts is not None:

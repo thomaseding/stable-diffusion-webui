@@ -25,6 +25,7 @@ class ExtraNetworkLora(extra_networks.ExtraNetwork):
         for params in params_list:
             assert params.items
 
+            # THOMAS lora
             names.append(params.positional[0])
 
             te_multiplier = float(params.positional[1]) if len(params.positional) > 1 else 1.0

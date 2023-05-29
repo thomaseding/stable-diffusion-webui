@@ -325,6 +325,7 @@ def network_apply_weights(self: Union[torch.nn.Conv2d, torch.nn.Linear, torch.nn
             bias_backup = None
         self.network_bias_backup = bias_backup
 
+    # THOMAS lora (and others?)
     if current_names != wanted_names:
         network_restore_weights_from_backup(self)
 
