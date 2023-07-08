@@ -720,6 +720,8 @@ IGNORED_INFO_KEYS = {
 
 
 def read_info_from_image(image: Image.Image) -> tuple[str | None, dict]:
+    # print(f"type = {type(image)}")
+    # print(f"image.info = {image.info}")
     items = (image.info or {}).copy()
 
     geninfo = items.pop('parameters', None)
@@ -749,6 +751,10 @@ Negative prompt: {json_info["uc"]}
 Steps: {json_info["steps"]}, Sampler: {sampler}, CFG scale: {json_info["scale"]}, Seed: {json_info["seed"]}, Size: {image.width}x{image.height}, Clip skip: 2, ENSD: 31337"""
         except Exception:
             errors.report("Error parsing NovelAI image generation parameters", exc_info=True)
+
+    # print(f"geninfo = {geninfo}")
+    # print(f"items = {items}")
+    # print(f"", flush=True)
 
     return geninfo, items
 

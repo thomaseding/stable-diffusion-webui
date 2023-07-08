@@ -613,6 +613,10 @@ class ScriptRunner:
                 errors.report(f"Error running before_process: {script.filename}", exc_info=True)
 
     def process(self, p):
+        # THOMAS
+        # if hasattr(p.image, "filename"):
+        #     name = p.image.filename
+        #     print(f"Processing {name}...")
         for script in self.alwayson_scripts:
             try:
                 script_args = p.script_args[script.args_from:script.args_to]
