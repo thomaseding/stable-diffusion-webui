@@ -76,6 +76,12 @@ def save_files(js_data, images, do_make_zip, index):
             i = 0 if is_grid else (image_index - p.index_of_first_image)
 
             p.batch_index = image_index-1
+            print("THOMAS")
+            print(f"i: {i}")
+            print(f"len(p.all_seeds): {len(p.all_seeds)}")
+            print(f"len(p.all_prompts): {len(p.all_prompts)}")
+            print(f"image_index: {image_index}")
+            print(f"len(p.infotexts): {len(p.infotexts)}")
             fullfn, txt_fullfn = modules.images.save_image(image, path, "", seed=p.all_seeds[i], prompt=p.all_prompts[i], extension=extension, info=p.infotexts[image_index], grid=is_grid, p=p, save_to_dirs=save_to_dirs)
 
             filename = os.path.relpath(fullfn, path)
