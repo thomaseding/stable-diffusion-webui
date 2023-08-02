@@ -34,6 +34,17 @@ def apply_field(field):
     return fun
 
 
+def apply_image_dimensions(p, x, xs):
+    if 'x' in x:
+        w, h = x.split('x')
+    else:
+        w, h = x.split('_')
+    w = int(w)
+    h = int(h)
+    setattr(p, "width", w)
+    setattr(p, "height", h)
+
+
 def apply_prompt(p, x, xs):
     if xs[0] not in p.prompt and xs[0] not in p.negative_prompt:
         raise RuntimeError(f"Prompt S/R did not find {xs[0]} in prompt or negative prompt.")
@@ -230,6 +241,9 @@ class AxisOptionTxt2Img(AxisOption):
 axis_options = [
     AxisOption("Nothing", str, do_nothing, format_value=format_nothing),
     AxisOption("Seed", int, apply_field("seed")),
+    AxisOption("Width", int, apply_field("width")),
+    AxisOption("Height", int, apply_field("height")),
+    AxisOption("Dimensions", str, apply_image_dimensions),
     AxisOption("Var. seed", int, apply_field("subseed")),
     AxisOption("Var. strength", float, apply_field("subseed_strength")),
     AxisOption("Steps", int, apply_field("steps")),
@@ -585,6 +599,11 @@ class Script(scripts.Script):
                 valslist = valslist_ext
             elif opt.type == str_permutations:
                 valslist = list(permutations(valslist))
+
+            if len(valslist) > 0 and valslist[0] == "RANDOM":
+                valslist = valslist[1:]
+                valslist = [random.choice(valslist)]
+                print(f"Randomly selected {valslist[0]}\n")
 
             valslist = [opt.type(x) for x in valslist]
 
