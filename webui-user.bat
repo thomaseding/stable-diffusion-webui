@@ -12,6 +12,8 @@ set COMMANDLINE_ARGS= ^
   --embeddings-dir=E:/models/embeddings^
   --textual-inversion-templates-dir=E:/models/ti-templates^
   --xformers^
-  --port=7860
+  --port=7860^
+  ^
+  %*
 
 call webui.bat
