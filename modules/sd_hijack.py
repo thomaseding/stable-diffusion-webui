@@ -172,7 +172,8 @@ class StableDiffusionModelHijack:
         self.comments = []
 
         self.embedding_db = modules.textual_inversion.textual_inversion.EmbeddingDatabase()
-        self.embedding_db.add_embedding_dir(cmd_opts.embeddings_dir)
+        for dir in cmd_opts.embeddings_dir:
+            self.embedding_db.add_embedding_dir(dir)
 
     def apply_optimizations(self, option=None):
         try:

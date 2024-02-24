@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 import importlib
+from typing import List, Union
 from urllib.parse import urlparse
 
 from modules import shared
@@ -33,7 +34,7 @@ def load_file_from_url(
     return cached_file
 
 
-def load_models(model_path: str, model_url: str = None, command_path: str = None, ext_filter=None, download_name=None, ext_blacklist=None) -> list:
+def load_models(model_path: str, model_url: str = None, command_path: Union[str, List[str], None] = None, ext_filter=None, download_name=None, ext_blacklist=None) -> list:
     """
     A one-and done loader to try finding the desired models in specified directories.
 
@@ -45,38 +46,47 @@ def load_models(model_path: str, model_url: str = None, command_path: str = None
     @return: A list of paths containing the desired model(s)
     """
     output = []
+    places = []
+    command_paths = command_path if isinstance(command_path, list) else [command_path]
 
-    try:
-        places = []
+    for command_path in command_paths:
+        try:
+            if command_path is not None and command_path != model_path:
+                pretrained_path = os.path.join(command_path, 'experiments/pretrained_models')
+                if os.path.exists(pretrained_path):
+                    print(f"Appending path: {pretrained_path}")
+                    places.append(pretrained_path)
+                elif os.path.exists(command_path):
+                    places.append(command_path)
 
-        if command_path is not None and command_path != model_path:
-            pretrained_path = os.path.join(command_path, 'experiments/pretrained_models')
-            if os.path.exists(pretrained_path):
-                print(f"Appending path: {pretrained_path}")
-                places.append(pretrained_path)
-            elif os.path.exists(command_path):
-                places.append(command_path)
+            places.append(model_path)
 
-        places.append(model_path)
+            for place in places:
+                for full_path in shared.walk_files(place, allowed_extensions=ext_filter):
+                    if os.path.islink(full_path) and not os.path.exists(full_path):
+                        print(f"Skipping broken symlink: {full_path}")
+                        continue
+                    if ext_blacklist is not None and any(full_path.endswith(x) for x in ext_blacklist):
+                        continue
+                    if full_path not in output:
+                        output.append(full_path)
 
-        for place in places:
-            for full_path in shared.walk_files(place, allowed_extensions=ext_filter):
-                if os.path.islink(full_path) and not os.path.exists(full_path):
-                    print(f"Skipping broken symlink: {full_path}")
-                    continue
-                if ext_blacklist is not None and any(full_path.endswith(x) for x in ext_blacklist):
-                    continue
-                if full_path not in output:
-                    output.append(full_path)
+            if model_url is not None and len(output) == 0:
+                if download_name is not None:
+                    from basicsr.utils.download_util import load_file_from_url
+                    dl = load_file_from_url(model_url, places[0], True, download_name)
+                    output.append(dl)
+                else:
+                    output.append(model_url)
 
-        if model_url is not None and len(output) == 0:
-            if download_name is not None:
-                output.append(load_file_from_url(model_url, model_dir=places[0], file_name=download_name))
-            else:
-                output.append(model_url)
+            if model_url is not None and len(output) == 0:
+                if download_name is not None:
+                    output.append(load_file_from_url(model_url, model_dir=places[0], file_name=download_name))
+                else:
+                    output.append(model_url)
 
-    except Exception:
-        pass
+        except Exception:
+            pass
 
     return output
 

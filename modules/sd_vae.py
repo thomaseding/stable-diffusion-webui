@@ -81,19 +81,21 @@ def refresh_vae_list():
         os.path.join(vae_path, '**/*.safetensors'),
     ]
 
-    if shared.cmd_opts.ckpt_dir is not None and os.path.isdir(shared.cmd_opts.ckpt_dir):
-        paths += [
-            os.path.join(shared.cmd_opts.ckpt_dir, '**/*.vae.ckpt'),
-            os.path.join(shared.cmd_opts.ckpt_dir, '**/*.vae.pt'),
-            os.path.join(shared.cmd_opts.ckpt_dir, '**/*.vae.safetensors'),
-        ]
+    for ckpt_dir in shared.cmd_opts.ckpt_dir:
+        if os.path.isdir(ckpt_dir):
+            paths += [
+                os.path.join(ckpt_dir, '**/*.vae.ckpt'),
+                os.path.join(ckpt_dir, '**/*.vae.pt'),
+                os.path.join(ckpt_dir, '**/*.vae.safetensors'),
+            ]
 
-    if shared.cmd_opts.vae_dir is not None and os.path.isdir(shared.cmd_opts.vae_dir):
-        paths += [
-            os.path.join(shared.cmd_opts.vae_dir, '**/*.ckpt'),
-            os.path.join(shared.cmd_opts.vae_dir, '**/*.pt'),
-            os.path.join(shared.cmd_opts.vae_dir, '**/*.safetensors'),
-        ]
+    for vae_dir in shared.cmd_opts.vae_dir:
+        if os.path.isdir(vae_dir):
+            paths += [
+                os.path.join(vae_dir, '**/*.ckpt'),
+                os.path.join(vae_dir, '**/*.pt'),
+                os.path.join(vae_dir, '**/*.safetensors'),
+            ]
 
     candidates = []
     for path in paths:

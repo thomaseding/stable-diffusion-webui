@@ -52,8 +52,8 @@ class CheckpointInfo:
 
         self.is_safetensors = os.path.splitext(filename)[1].lower() == ".safetensors"
 
-        if shared.cmd_opts.ckpt_dir is not None and abspath.startswith(shared.cmd_opts.ckpt_dir):
-            name = abspath.replace(shared.cmd_opts.ckpt_dir, '')
+        if shared.cmd_opts.ckpt_dir and abspath.startswith(shared.cmd_opts.ckpt_dir[0]):
+            name = abspath.replace(shared.cmd_opts.ckpt_dir[0], '')
         elif abspath.startswith(model_path):
             name = abspath.replace(model_path, '')
         else:
@@ -215,8 +215,10 @@ def select_checkpoint():
             error_message += f"\n - file {os.path.abspath(shared.cmd_opts.ckpt)}"
         error_message += f"\n - directory {model_path}"
         if shared.cmd_opts.ckpt_dir is not None:
-            error_message += f"\n - directory {os.path.abspath(shared.cmd_opts.ckpt_dir)}"
-        error_message += "Can't run without a checkpoint. Find and place a .ckpt or .safetensors file into any of those locations."
+            dirs = shared.cmd_opts.ckpt_dir
+            for dir in dirs:
+                error_message += f"\n - directory {os.path.abspath(dir)}"
+        error_message += "\nCan't run without a checkpoint. Find and place a .ckpt or .safetensors file into any of those locations."
         raise FileNotFoundError(error_message)
 
     checkpoint_info = next(iter(checkpoints_list.values()))

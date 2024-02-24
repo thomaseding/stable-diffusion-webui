@@ -12,7 +12,22 @@ def initialize():
     Should be called early because some other modules you can import mingt need these fields to be already set.
     """
 
-    os.makedirs(cmd_opts.hypernetwork_dir, exist_ok=True)
+    if not cmd_opts.ckpt_dir:
+        cmd_opts.ckpt_dir = []
+    if not cmd_opts.vae_dir:
+        cmd_opts.vae_dir = []
+
+    if not cmd_opts.embeddings_dir:
+        cmd_opts.embeddings_dir = [os.path.join(data_path, 'embeddings')]
+    if not cmd_opts.lora_dir:
+        cmd_opts.lora_dir = [os.path.join(models_path, 'Lora')]
+    if not cmd_opts.lyco_dir:
+        cmd_opts.lyco_dir = [os.path.join(models_path, 'LyCORIS')]
+    if not cmd_opts.hypernetwork_dir:
+        cmd_opts.hypernetwork_dir = [os.path.join(models_path, 'hypernetworks')]
+
+    for dir in cmd_opts.hypernetwork_dir:
+        os.makedirs(dir, exist_ok=True)
 
     from modules import options, shared_options
     shared.options_templates = shared_options.options_templates
