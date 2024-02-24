@@ -17,11 +17,13 @@ def initialize():
     if not cmd_opts.vae_dir:
         cmd_opts.vae_dir = []
 
+    THOMAS_LYCO_INSTALLED = False  # hack to avoid undefined cmd_opts.lyco_dir access
+
     if not cmd_opts.embeddings_dir:
         cmd_opts.embeddings_dir = [os.path.join(data_path, 'embeddings')]
     if not cmd_opts.lora_dir:
         cmd_opts.lora_dir = [os.path.join(models_path, 'Lora')]
-    if not cmd_opts.lyco_dir:
+    if THOMAS_LYCO_INSTALLED and not cmd_opts.lyco_dir:
         cmd_opts.lyco_dir = [os.path.join(models_path, 'LyCORIS')]
     if not cmd_opts.hypernetwork_dir:
         cmd_opts.hypernetwork_dir = [os.path.join(models_path, 'hypernetworks')]
