@@ -75,6 +75,7 @@ def webui():
                 auto_launch_browser = True
             elif shared.opts.auto_launch_browser == "Local":
                 auto_launch_browser = not any([cmd_opts.listen, cmd_opts.share, cmd_opts.ngrok, cmd_opts.server_name])
+        auto_launch_browser = False
 
         app, local_url, share_url = shared.demo.launch(
             share=cmd_opts.share,
